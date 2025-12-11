@@ -160,6 +160,8 @@
             color: var(--accent-color);
         }
     </style>
+    <script src="auth-guard.js"></script>
+    <script src="theme.js"></script>
 </head>
 
 <body>
@@ -187,6 +189,9 @@
                     <li data-auth="logged"><a href="login.html"><i data-lucide="user"></i> Conta</a></li>
                     <li data-auth="admin"><a href="admin.html"><i data-lucide="settings"></i> Admin</a></li>
                 </ul>
+                <button id="theme-toggle" onclick="toggleTheme()" title="Alternar tema">
+                    <i data-lucide="sun"></i>
+                </button>
             </nav>
         </div>
     </header>

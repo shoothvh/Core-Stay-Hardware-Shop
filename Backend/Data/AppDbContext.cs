@@ -10,6 +10,7 @@ namespace Backend.Data
         }
 
         public DbSet<Produto> Produtos { get; set; }
+        public DbSet<Avaliacao> Avaliacoes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

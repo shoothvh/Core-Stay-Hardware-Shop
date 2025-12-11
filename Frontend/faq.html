@@ -112,6 +112,8 @@
             transform: translateY(-2px);
         }
     </style>
+    <script src="auth-guard.js"></script>
+    <script src="theme.js"></script>
 </head>
 
 <body>
@@ -139,6 +141,9 @@
                     <li data-auth="admin"><a href="admin.html"><i data-lucide="settings"></i> Admin</a></li>
                     <li><a href="faq.html" class="active"><i data-lucide="help-circle"></i> FAQ</a></li>
                 </ul>
+                <button id="theme-toggle" onclick="toggleTheme()" title="Alternar tema">
+                    <i data-lucide="sun"></i>
+                </button>
             </nav>
         </div>
     </header>

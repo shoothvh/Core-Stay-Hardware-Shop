@@ -320,6 +320,13 @@ header .container {
     height: 24px;
 }
 
+/* ========== NAVIGATION ========== */
+nav#main-nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
 nav ul {
     list-style: none;
     display: flex;
@@ -357,10 +364,10 @@ nav a.active {
 
 /* Theme Toggle */
 #theme-toggle {
-    background: var(--card-bg);
+    background: transparent;
     border: 1px solid var(--border-color);
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
@@ -377,7 +384,13 @@ nav a.active {
 
 #theme-toggle:hover {
     border-color: var(--accent-color);
-    transform: rotate(20deg);
+    color: var(--accent-color);
+    transform: rotate(15deg);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+
+transform: rotate(20deg);
 }
 
 /* ========== MOBILE MENU ========== */

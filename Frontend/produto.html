@@ -218,7 +218,99 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Reviews Section */
+        .reviews-section {
+            margin-top: 60px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 40px;
+        }
+
+        .reviews-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .review-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 16px;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .review-author {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .review-date {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .review-stars {
+            color: #ffc107;
+            margin-bottom: 8px;
+        }
+
+        .review-text {
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Review Form */
+        .review-form {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .review-form h4 {
+            margin-bottom: 20px;
+        }
+
+        .rating-select {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .star-input {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #444;
+            transition: color 0.2s;
+        }
+
+        .star-input:hover,
+        .star-input.active {
+            color: #ffc107;
+        }
+
+        .form-control {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-family: var(--font-body);
+        }
     </style>
+    <script src="auth-guard.js"></script>
+    <script src="theme.js"></script>
 </head>
 
 <body>
@@ -242,6 +334,9 @@
                                 class="cart-badge">0</span></a></li>
                     <li><a href="pedidos.html"><i data-lucide="package"></i> Pedidos</a></li>
                 </ul>
+                <button id="theme-toggle" onclick="toggleTheme()" title="Alternar tema">
+                    <i data-lucide="sun"></i>
+                </button>
             </nav>
         </div>
     </header>
@@ -258,6 +353,41 @@
         <div id="product-container">
             <div class="loading">Carregando produto...</div>
         </div>
+
+        <!-- Reviews Section -->
+        <section class="reviews-section" id="reviews-section" style="display: none;">
+            <div class="reviews-header">
+                <h3>⭐ Avaliações (<span id="review-count">0</span>)</h3>
+            </div>
+
+            <!-- Review Form (Hidden if not logged in) -->
+            <div class="review-form" id="review-form-container" style="display: none;">
+                <h4>Deixe sua avaliação</h4>
+                <div class="rating-select" id="rating-select">
+                    <span class="star-input" data-value="1">★</span>
+                    <span class="star-input" data-value="2">★</span>
+                    <span class="star-input" data-value="3">★</span>
+                    <span class="star-input" data-value="4">★</span>
+                    <span class="star-input" data-value="5">★</span>
+                </div>
+                <textarea id="review-comment" class="form-control" rows="3"
+                    placeholder="O que você achou deste produto?"></textarea>
+                <div style="text-align: right;">
+                    <button class="btn-buy btn-add-cart" style="padding: 10px 24px; font-size: 0.9rem;"
+                        onclick="submitReview()">Enviar Avaliação</button>
+                </div>
+            </div>
+
+            <div id="login-to-review"
+                style="margin-bottom: 30px; padding: 20px; background: rgba(255,107,0,0.1); border-radius: 8px; text-align: center; display: none;">
+                <p>Para avaliar este produto, você precisa <a href="login.html"
+                        style="color: var(--accent-color); font-weight: bold;">fazer login</a>.</p>
+            </div>
+
+            <div id="reviews-list">
+                <!-- Reviews via JS -->
+            </div>
+        </section>
 
         <!-- Related Products -->
         <section class="related-section" id="related-section" style="display: none;">
@@ -418,9 +548,237 @@
             alert(`${quantity}x ${currentProduct.nome} adicionado ao carrinho!`);
         }
 
-        document.addEventListener('DOMContentLoaded', loadProduct);
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadProduct();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            if (productId) {
+                loadReviews(productId);
+            }
+        });
+
         lucide.createIcons();
+
+        // --- Review Logic ---
+        const REVIEW_API_URL = 'http://localhost:5000/api/avaliacoes';
+        let currentRating = 5;
+
+        // Init Star Rating
+        document.querySelectorAll('.star-input').forEach(star => {
+            star.addEventListener('click', () => {
+                const val = parseInt(star.dataset.value);
+                currentRating = val;
+                updateStarUI(val);
+            });
+        });
+
+        function updateStarUI(rating) {
+            document.querySelectorAll('.star-input').forEach(star => {
+                const val = parseInt(star.dataset.value);
+                if (val <= rating) star.classList.add('active');
+                else star.classList.remove('active');
+            });
+        }
+        updateStarUI(5); // Default
+
+        async function loadReviews(productId) {
+            try {
+                const response = await fetch(`${REVIEW_API_URL}/produto/${productId}`);
+                if (!response.ok) return;
+                const reviews = await response.json();
+                renderReviews(reviews);
+
+                // Show section
+                document.getElementById('reviews-section').style.display = 'block';
+
+                // Handle Auth UI
+                if (typeof AuthGuard !== 'undefined' && AuthGuard.isLoggedIn()) {
+                    document.getElementById('review-form-container').style.display = 'block';
+                    document.getElementById('login-to-review').style.display = 'none';
+                } else {
+                    document.getElementById('review-form-container').style.display = 'none';
+                    document.getElementById('login-to-review').style.display = 'block';
+                }
+
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+            }
+        }
+
+        function renderReviews(reviews) {
+            const list = document.getElementById('reviews-list');
+            document.getElementById('review-count').textContent = reviews.length;
+
+            if (reviews.length === 0) {
+                list.innerHTML = '<p style="color: #666; font-style: italic;">Seja o primeiro a avaliar este produto!</p>';
+                return;
+            }
+
+            list.innerHTML = reviews.map(r => {
+                const stars = '★'.repeat(r.estrelas) + '☆'.repeat(5 - r.estrelas);
+                const date = new Date(r.data).toLocaleDateString('pt-BR');
+                return `
+                    <div class="review-card">
+                        <div class="review-header">
+                            <span class="review-author">${r.usuarioNome}</span>
+                            <span class="review-date">${date}</span>
+                        </div>
+                        <div class="review-stars">${stars}</div>
+                        <div class="review-text">${r.comentario}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function submitReview() {
+            if (!currentProduct) return;
+
+            const comment = document.getElementById('review-comment').value;
+            const user = JSON.parse(localStorage.getItem('user_session'));
+
+            if (!user) {
+                alert('Você precisa estar logado.');
+                return;
+            }
+
+            const review = {
+                produtoId: currentProduct.id,
+                usuarioNome: user.name || 'Usuário',
+                estrelas: currentRating,
+                comentario: comment
+            };
+
+            try {
+                const response = await fetch(REVIEW_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(review)
+                });
+
+                if (response.ok) {
+                    alert('Avaliação enviada com sucesso!');
+                    document.getElementById('review-comment').value = '';
+                    loadReviews(currentProduct.id); // Reload
+                } else {
+                    alert('Erro ao enviar avaliação.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Erro de conexão.');
+            }
+        }
     </script>
 </body>
 
 </html>
+const REVIEW_API_URL = 'http://localhost:5000/api/avaliacoes';
+let currentRating = 5;
+
+// Init Star Rating
+document.querySelectorAll('.star-input').forEach(star => {
+star.addEventListener('click', () => {
+const val = parseInt(star.dataset.value);
+currentRating = val;
+updateStarUI(val);
+});
+});
+
+function updateStarUI(rating) {
+document.querySelectorAll('.star-input').forEach(star => {
+const val = parseInt(star.dataset.value);
+if (val <= rating) star.classList.add('active'); else star.classList.remove('active'); }); } updateStarUI(5); // Default
+    async function loadReviews(productId) { try { const response=await fetch(`${REVIEW_API_URL}/produto/${productId}`);
+    if (!response.ok) return; // Silent fail or empty const reviews=await response.json(); renderReviews(reviews); //
+    Show section document.getElementById('reviews-section').style.display='block' ; // Handle Auth UI if (typeof
+    AuthGuard !=='undefined' && AuthGuard.isLoggedIn()) {
+    document.getElementById('review-form-container').style.display='block' ;
+    document.getElementById('login-to-review').style.display='none' ; } else {
+    document.getElementById('review-form-container').style.display='none' ;
+    document.getElementById('login-to-review').style.display='block' ; } } catch (error) { console.error('Error loading
+    reviews:', error); } } function renderReviews(reviews) { const list=document.getElementById('reviews-list');
+    document.getElementById('review-count').textContent=reviews.length; if (reviews.length===0) {
+    list.innerHTML='<p style="color: #666; font-style: italic;">Seja o primeiro a avaliar este produto!</p>' ; return; }
+    list.innerHTML=reviews.map(r=> {
+    const stars = '★'.repeat(r.estrelas) + '☆'.repeat(5 - r.estrelas);
+    const date = new Date(r.data).toLocaleDateString('pt-BR');
+    return `
+    <div class="review-card">
+        <div class="review-header">
+            <span class="review-author">${r.usuarioNome}</span>
+            <span class="review-date">${date}</span>
+        </div>
+        <div class="review-stars">${stars}</div>
+        <div class="review-text">${r.comentario}</div>
+    </div>
+    `;
+    }).join('');
+    }
+
+    async function submitReview() {
+    if (!currentProduct) return;
+
+    const comment = document.getElementById('review-comment').value;
+    const user = JSON.parse(localStorage.getItem('user_session')); // Assuming AuthGuard stores this standard way or
+    just check storage
+
+    if (!user) {
+    alert('Você precisa estar logado.');
+    return;
+    }
+
+    const review = {
+    produtoId: currentProduct.id,
+    usuarioNome: user.name || 'Usuário',
+    estrelas: currentRating,
+    comentario: comment
+    };
+
+    try {
+    const response = await fetch(REVIEW_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(review)
+    });
+
+    if (response.ok) {
+    alert('Avaliação enviada com sucesso!');
+    document.getElementById('review-comment').value = '';
+    loadReviews(currentProduct.id); // Reload
+    } else {
+    alert('Erro ao enviar avaliação.');
+    }
+    } catch (error) {
+    console.error(error);
+    alert('Erro de conexão.');
+    }
+    }
+
+    // Hook loadReviews into loadProduct
+    const originalLoadProduct = loadProduct;
+    loadProduct = async () => {
+    // We need to wait for original logic but it's not exported well.
+    // Instead of hooking, let's just modify the original function call location or paste logic inside.
+    // Since I am replacing content, I can't easily hook inside without replacing the whole function above.
+    // I will use a simple workaround: call loadReviews at the end of DOMContentLoaded listener
+    // BUT loadReviews needs productId.
+    // I'll re-implement DOMContentLoaded listener since I'm replacing the end of file.
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
+    // Call original logic (it renders product)
+    // Wait a bit or fetch again?
+    // Actually I can just copy the original logic into a new function if needed, but I don't want to duplicate code.
+    // Best approach: I'm replacing lines 421-??? (end of file).
+    // Line 421 was `document.addEventListener('DOMContentLoaded', loadProduct);`
+
+    // I will redefine the listener to call both.
+    await originalLoadProduct();
+    if (productId) loadReviews(productId);
+    };
+
+    </body>
+
+    </html>
