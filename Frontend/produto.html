@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Stay | Produto</title>
+    <meta name="description"
+        content="Compre os melhores componentes de hardware na Core Stay. Frete grátis para SP, parcelamento em até 12x.">
+    <meta property="og:title" content="Core Stay Hardware">
+    <meta property="og:description" content="Componentes de alta performance para seu PC Gamer">
+    <meta property="og:type" content="product">
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .product-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-top: 40px;
+        }
+
+        .product-image-large {
+            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        .product-image-large img {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.5));
+        }
+
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .product-info .product-category {
+            font-size: 0.9rem;
+        }
+
+        .product-info .product-title {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        .product-info .product-price {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+        }
+
+        .product-installments {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .stock-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .stock-info.in-stock {
+            color: var(--success-color);
+        }
+
+        .stock-info.low-stock {
+            color: #ff9500;
+        }
+
+        .specs-box {
+            background: rgba(30, 30, 30, 0.8);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .specs-box h4 {
+            font-family: var(--font-heading);
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .specs-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .specs-list span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .specs-list span::before {
+            content: '•';
+            color: var(--accent-color);
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .quantity-selector button {
+            width: 40px;
+            height: 40px;
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid #333;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            border-radius: var(--border-radius-sm);
+            transition: all 0.3s;
+        }
+
+        .quantity-selector button:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .quantity-selector span {
+            font-size: 1.2rem;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .btn-add-cart {
+            padding: 18px 40px;
+            font-size: 1.1rem;
+        }
+
+        /* Related Products */
+        .related-section {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .related-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .related-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .related-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-4px);
+        }
+
+        .related-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: contain;
+            background: #1a1a1a;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .related-card h4 {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .related-card .price {
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .product-detail {
+                grid-template-columns: 1fr;
+            }
+
+            .product-info .product-title {
+                font-size: 1.8rem;
+            }
+
+            .specs-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="36" height="36" rx="8" stroke="currentColor" stroke-width="3" />
+                    <path d="M12 20h16M20 12v16" stroke="#ff6b00" stroke-width="3" stroke-linecap="round" />
+                    <circle cx="20" cy="20" r="4" fill="#ff6b00" />
+                </svg>
+                <span>CORE<span class="highlight">STAY</span></span>
+            </a>
+
+            <nav id="main-nav">
+                <ul>
+                    <li><a href="index.html"><i data-lucide="layout-grid"></i> Catálogo</a></li>
+                    <li><a href="montar-pc.html"><i data-lucide="cpu"></i> Montar PC</a></li>
+                    <li><a href="carrinho.html" id="cart-btn"><i data-lucide="shopping-cart"></i> Carrinho <span
+                                class="cart-badge">0</span></a></li>
+                    <li><a href="pedidos.html"><i data-lucide="package"></i> Pedidos</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <nav class="breadcrumbs">
+            <a href="index.html"><i data-lucide="home"></i></a>
+            <span>/</span>
+            <a href="index.html">Catálogo</a>
+            <span>/</span>
+            <span class="current" id="breadcrumb-product">Produto</span>
+        </nav>
+
+        <div id="product-container">
+            <div class="loading">Carregando produto...</div>
+        </div>
+
+        <!-- Related Products -->
+        <section class="related-section" id="related-section" style="display: none;">
+            <h3>🛒 Produtos Relacionados</h3>
+            <div class="related-grid" id="related-grid"></div>
+        </section>
+    </main>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api/produtos';
+        const container = document.getElementById('product-container');
+        let quantity = 1;
+        let currentProduct = null;
+        let allProducts = [];
+
+        function getCarrinho() {
+            return JSON.parse(localStorage.getItem('carrinho')) || [];
+        }
+
+        function saveCarrinho(carrinho) {
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+        }
+
+        function updateCartUI() {
+            const carrinho = getCarrinho();
+            const badge = document.querySelector('.cart-badge');
+            if (badge) {
+                badge.textContent = carrinho.length;
+            }
+        }
+
+        async function loadProduct() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (!productId) {
+                container.innerHTML = '<div class="error">Produto não encontrado.</div>';
+                return;
+            }
+
+            try {
+                const response = await fetch(API_URL);
+                allProducts = await response.json();
+                currentProduct = allProducts.find(p => p.id == productId);
+
+                if (!currentProduct) {
+                    container.innerHTML = '<div class="error">Produto não encontrado.</div>';
+                    return;
+                }
+
+                renderProduct(currentProduct);
+                renderRelatedProducts(currentProduct);
+                updateCartUI();
+
+                // Update page meta
+                document.title = `Core Stay | ${currentProduct.nome}`;
+                document.getElementById('breadcrumb-product').textContent = currentProduct.nome;
+
+            } catch (error) {
+                container.innerHTML = `<div class="error">Erro ao carregar produto: ${error.message}</div>`;
+            }
+        }
+
+        function renderProduct(produto) {
+            const preco = new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(produto.preco);
+
+            const parcela = new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(produto.preco / 12);
+
+            const specs = produto.descricao ? produto.descricao.split(' | ') : [];
+            const stockClass = produto.estoque <= 10 ? 'low-stock' : 'in-stock';
+            const stockText = produto.estoque <= 10 ? `Apenas ${produto.estoque} em estoque!` : `${produto.estoque} em estoque`;
+
+            container.innerHTML = `
+                <div class="product-detail">
+                    <div class="product-image-large">
+                        <img src="${produto.imagemUrl}" alt="${produto.nome}">
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">${produto.categoria}</span>
+                        <h1 class="product-title">${produto.nome}</h1>
+                        <div class="product-price">${preco}</div>
+                        <div class="product-installments">ou 12x de ${parcela} sem juros</div>
+                        <div class="stock-info ${stockClass}">
+                            <i data-lucide="check-circle"></i> ${stockText}
+                        </div>
+
+                        <div class="specs-box">
+                            <h4>Especificações</h4>
+                            <div class="specs-list">
+                                ${specs.map(spec => `<span>${spec}</span>`).join('')}
+                            </div>
+                        </div>
+
+                        <div class="quantity-selector">
+                            <button onclick="changeQuantity(-1)">-</button>
+                            <span id="quantity">1</span>
+                            <button onclick="changeQuantity(1)">+</button>
+                        </div>
+
+                        <button class="btn-buy btn-add-cart" onclick="addToCart()">
+                            Adicionar ao Carrinho
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            lucide.createIcons();
+        }
+
+        function renderRelatedProducts(produto) {
+            const related = allProducts
+                .filter(p => p.categoria === produto.categoria && p.id !== produto.id)
+                .slice(0, 4);
+
+            if (related.length === 0) return;
+
+            const grid = document.getElementById('related-grid');
+            grid.innerHTML = related.map(p => `
+                <a href="produto.html?id=${p.id}" class="related-card">
+                    <img src="${p.imagemUrl}" alt="${p.nome}">
+                    <h4>${p.nome}</h4>
+                    <div class="price">${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(p.preco)}</div>
+                </a>
+            `).join('');
+
+            document.getElementById('related-section').style.display = 'block';
+        }
+
+        function changeQuantity(delta) {
+            quantity = Math.max(1, quantity + delta);
+            document.getElementById('quantity').textContent = quantity;
+        }
+
+        function addToCart() {
+            const carrinho = getCarrinho();
+
+            for (let i = 0; i < quantity; i++) {
+                carrinho.push(currentProduct);
+            }
+
+            saveCarrinho(carrinho);
+            updateCartUI();
+
+            // Badge bounce animation
+            const badge = document.querySelector('.cart-badge');
+            if (badge) {
+                badge.classList.remove('bounce');
+                void badge.offsetWidth;
+                badge.classList.add('bounce');
+            }
+
+            alert(`${quantity}x ${currentProduct.nome} adicionado ao carrinho!`);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadProduct);
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

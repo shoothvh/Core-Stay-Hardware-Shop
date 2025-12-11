@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Stay | FAQ - Perguntas Frequentes</title>
+    <meta name="description"
+        content="Perguntas frequentes sobre compras, frete, garantia e muito mais na Core Stay Hardware.">
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-category {
+            margin-bottom: 40px;
+        }
+
+        .faq-category h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        .faq-category h3 i {
+            width: 24px;
+            height: 24px;
+        }
+
+        .faq-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background: rgba(255, 107, 0, 0.05);
+        }
+
+        .faq-question i {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.open .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            display: none;
+            padding: 0 20px 20px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .faq-item.open .faq-answer {
+            display: block;
+        }
+
+        .contact-cta {
+            background: linear-gradient(135deg, rgba(255, 107, 0, 0.1) 0%, rgba(255, 107, 0, 0.05) 100%);
+            border: 1px solid rgba(255, 107, 0, 0.3);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .contact-cta h3 {
+            margin-bottom: 12px;
+        }
+
+        .contact-cta p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .contact-cta a {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--accent-color);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 100px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .contact-cta a:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="36" height="36" rx="8" stroke="currentColor" stroke-width="3" />
+                    <path d="M12 20h16M20 12v16" stroke="#ff6b00" stroke-width="3" stroke-linecap="round" />
+                    <circle cx="20" cy="20" r="4" fill="#ff6b00" />
+                </svg>
+                <span>CORE<span class="highlight">STAY</span></span>
+            </a>
+
+            <nav id="main-nav">
+                <ul>
+                    <li><a href="index.html"><i data-lucide="layout-grid"></i> Catálogo</a></li>
+                    <li><a href="montar-pc.html"><i data-lucide="cpu"></i> Montar PC</a></li>
+                    <li><a href="carrinho.html"><i data-lucide="shopping-cart"></i> Carrinho</a></li>
+                    <li><a href="pedidos.html"><i data-lucide="package"></i> Pedidos</a></li>
+                    <li><a href="faq.html" class="active"><i data-lucide="help-circle"></i> FAQ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <nav class="breadcrumbs">
+            <a href="index.html"><i data-lucide="home"></i></a>
+            <span>/</span>
+            <span class="current">Perguntas Frequentes</span>
+        </nav>
+
+        <section class="catalog-header">
+            <h2>❓ Perguntas Frequentes</h2>
+            <p>Tire suas dúvidas sobre compras, frete e garantia</p>
+        </section>
+
+        <div class="faq-container">
+            <!-- Compras -->
+            <div class="faq-category">
+                <h3><i data-lucide="shopping-bag"></i> Compras</h3>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Como faço para comprar?
+                        <i data-lucide="chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Navegue pelo catálogo, adicione os produtos desejados ao carrinho e finalize a compra. Você pode
+                        usar cupons de desconto e calcular o frete antes de finalizar.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Quais formas de pagamento são aceitas?
+                        <i data-lucide="chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Aceitamos cartões de crédito (Visa, Mastercard, Elo, American Express), cartões de débito, PIX e
+                        boleto bancário. No cartão de crédito, parcelamos em até 12x sem juros.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Posso alterar ou cancelar meu pedido?
+                        <i data-lucide="chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Sim! Você pode solicitar alteração ou cancelamento em até 2 horas após a confirmação do pedido.
+                        Após esse prazo, entre em contato com nosso suporte.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Frete -->
+            <div class="faq-category">
+                <h3><i data-lucide="truck"></i> Frete e Entrega</h3>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Qual o prazo de entrega?
+                        <i data-lucide="chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        O prazo varia de acordo com sua região: São Paulo (1-2 dias úteis), Rio de Janeiro e Minas
+                        Gerais (3-5 dias úteis), Sul (5-7 dias úteis), outras regiões (7-10 dias úteis).
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        O frete é grátis?
+                        <i data-lucide="chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Sim! Frete grátis para todo o estado de São Paulo. Para outras regiões, calculamos o valor
+                        baseado no CEP de destino.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Como rastreio meu pedido?
+                        <i data-lucide="chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Após o envio, você receberá um e-mail com o código de rastreamento. Também pode acompanhar na
+                        página "Meus Pedidos".
+                    </div>
+                </div>
+            </div>
+
+            <!-- Garantia -->
+            <div class="faq-category">
+                <h3><i data-lucide="shield-check"></i> Garantia e Trocas</h3>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Qual a garantia dos produtos?
+                        <i data-lucide="chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Todos os produtos possuem garantia de 12 meses contra defeitos de fabricação, além da garantia
+                        legal de 90 dias prevista pelo Código de Defesa do Consumidor.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Como faço para trocar um produto?
+                        <i data-lucide="chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Entre em contato com nosso suporte em até 7 dias após o recebimento. O produto deve estar na
+                        embalagem original, sem sinais de uso. A troca é gratuita.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Posso devolver um produto?
+                        <i data-lucide="chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Sim! Você tem até 7 dias para desistir da compra (direito de arrependimento). O reembolso é
+                        feito em até 10 dias úteis após recebermos o produto.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suporte -->
+            <div class="faq-category">
+                <h3><i data-lucide="headphones"></i> Suporte Técnico</h3>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Como entro em contato com o suporte?
+                        <i data-lucide="chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        E-mail: contato@corestay.com | WhatsApp: (11) 99999-9999 | Horário: Segunda a Sexta, 9h às 18h.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Vocês fazem montagem de PCs?
+                        <i data-lucide="chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Sim! Use nosso configurador "Monte seu PC" para escolher os componentes. Oferecemos montagem
+                        gratuita e testes antes do envio.
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-cta">
+                <h3>Não encontrou sua resposta?</h3>
+                <p>Nossa equipe está pronta para ajudar você</p>
+                <a href="mailto:contato@corestay.com">Falar com Suporte</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleFaq(element) {
+            const item = element.parentElement;
+            item.classList.toggle('open');
+        }
+
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

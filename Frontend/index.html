@@ -4,45 +4,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Core Stay | Hardware Catalog</title>
+    <title>Core Stay | Hardware de Alta Performance</title>
+    <meta name="description"
+        content="Loja de hardware gamer e componentes de PC. Processadores, placas de vídeo, periféricos e mais.">
     <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts for "Industrial" look -->
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Roboto:wght@400;500&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
 
     <header>
         <div class="container">
-            <h1 class="logo">CORE <span class="highlight">STAY</span></h1>
-            <nav>
+            <a href="index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="36" height="36" rx="8" stroke="currentColor" stroke-width="3" />
+                    <path d="M12 20h16M20 12v16" stroke="#ff6b00" stroke-width="3" stroke-linecap="round" />
+                    <circle cx="20" cy="20" r="4" fill="#ff6b00" />
+                </svg>
+                <span>CORE<span class="highlight">STAY</span></span>
+            </a>
+
+            <button class="menu-toggle" onclick="toggleMobileMenu()" aria-label="Menu">
+                <i data-lucide="menu"></i>
+            </button>
+
+            <nav id="main-nav">
                 <ul>
-                    <li><a href="#">Catálogo</a></li>
-                    <li><a href="#">Monte seu PC</a></li>
-                    <li><a href="#" id="cart-btn">Carrinho (0)</a></li>
+                    <li><a href="index.html" class="active"><i data-lucide="layout-grid"></i> Catálogo</a></li>
+                    <li><a href="montar-pc.html"><i data-lucide="cpu"></i> Montar PC</a></li>
+                    <li><a href="carrinho.html" id="cart-btn"><i data-lucide="shopping-cart"></i> Carrinho <span
+                                class="cart-badge">0</span></a></li>
+                    <li><a href="pedidos.html"><i data-lucide="package"></i> Pedidos</a></li>
+                    <li><a href="dashboard.html"><i data-lucide="bar-chart-3"></i> Dashboard</a></li>
+                    <li><a href="admin.html"><i data-lucide="settings"></i> Admin</a></li>
                 </ul>
+                <button id="theme-toggle" onclick="toggleTheme()" title="Alternar tema">
+                    <i data-lucide="sun"></i>
+                </button>
             </nav>
         </div>
     </header>
 
+    <!-- Hero Banner with Parallax -->
+    <section class="hero-banner parallax-hero">
+        <div class="parallax-bg"></div>
+        <div class="container">
+            <div class="hero-content fade-in">
+                <h2>Monte seu Setup <span class="highlight">Gamer</span></h2>
+                <p>Componentes de alta performance com os melhores preços</p>
+                <a href="#products-grid" class="hero-cta">Ver Ofertas</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Countdown Timer Promo -->
+    <section class="promo-banner">
+        <div class="container">
+            <div class="promo-content">
+                <div class="promo-text">
+                    <span class="promo-badge">🔥 OFERTA RELÂMPAGO</span>
+                    <h3>Até 30% OFF em Placas de Vídeo</h3>
+                </div>
+                <div class="countdown" id="countdown">
+                    <div class="countdown-item">
+                        <span id="hours">00</span>
+                        <small>Horas</small>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="minutes">00</span>
+                        <small>Min</small>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="seconds">00</span>
+                        <small>Seg</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <main class="container">
+
+        <!-- Breadcrumbs -->
+        <nav class="breadcrumbs fade-in">
+            <a href="index.html"><i data-lucide="home"></i></a>
+            <span>/</span>
+            <span class="current">Catálogo</span>
+        </nav>
+
+        <!-- Search and Filters -->
+        <section class="filters-section">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Buscar produtos..." autocomplete="off">
+                <button id="search-btn">🔍</button>
+            </div>
+            <div class="category-filters">
+                <button class="filter-btn active" data-category="all">Todos</button>
+                <button class="filter-btn" data-category="Processador">Processadores</button>
+                <button class="filter-btn" data-category="Placa de Vídeo">Placas de Vídeo</button>
+                <button class="filter-btn" data-category="Periféricos">Periféricos</button>
+                <button class="filter-btn" data-category="Memória">Memória</button>
+                <button class="filter-btn" data-category="Armazenamento">Armazenamento</button>
+                <button class="filter-btn" data-category="Fonte">Fontes</button>
+            </div>
+            <div class="sort-container">
+                <label for="sort-select">Ordenar:</label>
+                <select id="sort-select">
+                    <option value="default">Padrão</option>
+                    <option value="price-asc">Menor preço</option>
+                    <option value="price-desc">Maior preço</option>
+                    <option value="name-asc">A-Z</option>
+                    <option value="name-desc">Z-A</option>
+                </select>
+            </div>
+        </section>
+
         <section class="catalog-header">
             <h2>Hardware Disponível</h2>
             <p>Componentes de alta performance para o seu setup.</p>
         </section>
 
         <section id="products-grid" class="products-grid">
-            <!-- Os cards serão injetados aqui via JavaScript -->
             <div class="loading">Carregando catálogo...</div>
         </section>
     </main>
 
+    <!-- Footer -->
     <footer>
-        <p>&copy; 2024 Core Stay Hardware. Todos os direitos reservados.</p>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>CORE <span class="highlight">STAY</span></h3>
+                    <p>Sua loja de hardware gamer e componentes de PC de alta performance.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Links Rápidos</h4>
+                    <ul>
+                        <li><a href="index.html">Catálogo</a></li>
+                        <li><a href="carrinho.html">Carrinho</a></li>
+                        <li><a href="admin.html">Administração</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Categorias</h4>
+                    <ul>
+                        <li><a href="#" onclick="filterByCategory('Processador')">Processadores</a></li>
+                        <li><a href="#" onclick="filterByCategory('Placa de Vídeo')">Placas de Vídeo</a></li>
+                        <li><a href="#" onclick="filterByCategory('Periféricos')">Periféricos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <ul>
+                        <li>📧 contato@corestay.com</li>
+                        <li>📞 (11) 99999-9999</li>
+                        <li>📍 São Paulo, SP</li>
+                    </ul>
+                </div>
+                <div class="footer-section newsletter-section">
+                    <h4>📬 Newsletter</h4>
+                    <p>Receba ofertas exclusivas e novidades!</p>
+                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                        <input type="email" id="newsletter-email" placeholder="Seu melhor e-mail" required>
+                        <button type="submit">Inscrever</button>
+                    </form>
+                    <p id="newsletter-status" class="newsletter-status"></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Core Stay Hardware. Todos os direitos reservados.</p>
+            </div>
+        </div>
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const nav = document.getElementById('main-nav');
+            nav.classList.toggle('open');
+        }
+
+        // ========== COUNTDOWN TIMER ==========
+        function startCountdown() {
+            // Set end time to 8 hours from now
+            const endTime = new Date().getTime() + (8 * 60 * 60 * 1000);
+
+            function updateTimer() {
+                const now = new Date().getTime();
+                const distance = endTime - now;
+
+                if (distance < 0) {
+                    document.getElementById('hours').textContent = '00';
+                    document.getElementById('minutes').textContent = '00';
+                    document.getElementById('seconds').textContent = '00';
+                    return;
+                }
+
+                const hours = Math.floor(distance / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            }
+
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
+        startCountdown();
+
+        // ========== PARALLAX SCROLL ==========
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxBg = document.querySelector('.parallax-bg');
+            if (parallaxBg) {
+                parallaxBg.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+
+        // ========== SCROLL ANIMATIONS ==========
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in, .slide-in-left').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
 </body>
 
 </html>

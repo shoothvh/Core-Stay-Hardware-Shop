@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Stay | Meus Pedidos</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .orders-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .order-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .order-id {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .order-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .order-status {
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .order-status.delivered {
+            background: rgba(52, 199, 89, 0.15);
+            color: #34c759;
+        }
+
+        .order-status.processing {
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+        }
+
+        .order-status.shipped {
+            background: rgba(0, 122, 255, 0.15);
+            color: #007aff;
+        }
+
+        .order-items {
+            padding: 20px 24px;
+        }
+
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            background: #1a1a1a;
+            border-radius: 8px;
+        }
+
+        .order-item-info {
+            flex: 1;
+        }
+
+        .order-item-info h4 {
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .order-item-info small {
+            color: var(--text-secondary);
+        }
+
+        .order-item-price {
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .order-total {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .btn-reorder {
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            border-radius: 100px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-reorder:hover {
+            background: var(--accent-color);
+            color: #fff;
+        }
+
+        .empty-orders {
+            text-align: center;
+            padding: 80px 40px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+        }
+
+        .empty-orders i {
+            width: 60px;
+            height: 60px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .empty-orders h3 {
+            margin-bottom: 12px;
+        }
+
+        .empty-orders a {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="36" height="36" rx="8" stroke="currentColor" stroke-width="3" />
+                    <path d="M12 20h16M20 12v16" stroke="#ff6b00" stroke-width="3" stroke-linecap="round" />
+                    <circle cx="20" cy="20" r="4" fill="#ff6b00" />
+                </svg>
+                <span>CORE<span class="highlight">STAY</span></span>
+            </a>
+
+            <nav id="main-nav">
+                <ul>
+                    <li><a href="index.html"><i data-lucide="layout-grid"></i> Catálogo</a></li>
+                    <li><a href="carrinho.html"><i data-lucide="shopping-cart"></i> Carrinho</a></li>
+                    <li><a href="pedidos.html" class="active"><i data-lucide="package"></i> Pedidos</a></li>
+                    <li><a href="admin.html"><i data-lucide="settings"></i> Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <nav class="breadcrumbs">
+            <a href="index.html"><i data-lucide="home"></i></a>
+            <span>/</span>
+            <span class="current">Meus Pedidos</span>
+        </nav>
+
+        <section class="catalog-header">
+            <h2>Meus Pedidos</h2>
+            <p>Acompanhe o status dos seus pedidos</p>
+        </section>
+
+        <div class="orders-container" id="orders-container">
+            <!-- Orders via JS -->
+        </div>
+    </main>
+
+    <script>
+        // Simulated order history
+        const orders = JSON.parse(localStorage.getItem('orderHistory')) || [];
+
+        function renderOrders() {
+            const container = document.getElementById('orders-container');
+
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-orders">
+                        <i data-lucide="package-x"></i>
+                        <h3>Nenhum pedido encontrado</h3>
+                        <p>Você ainda não fez nenhum pedido. <a href="index.html">Explorar catálogo</a></p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = orders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div>
+                            <div class="order-id">Pedido #${order.id}</div>
+                            <div class="order-date">${order.date}</div>
+                        </div>
+                        <span class="order-status ${order.status}">${getStatusText(order.status)}</span>
+                    </div>
+                    <div class="order-items">
+                        ${order.items.map(item => `
+                            <div class="order-item">
+                                <img src="${item.imagemUrl || 'https://placehold.co/60x60/1e1e1e/ff9900'}" alt="${item.nome}">
+                                <div class="order-item-info">
+                                    <h4>${item.nome}</h4>
+                                    <small>${item.categoria}</small>
+                                </div>
+                                <div class="order-item-price">${formatPrice(item.preco)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="order-footer">
+                        <div class="order-total">Total: ${formatPrice(order.total)}</div>
+                        <button class="btn-reorder" onclick="reorder(${order.id})">Comprar Novamente</button>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        function getStatusText(status) {
+            switch (status) {
+                case 'delivered': return '✓ Entregue';
+                case 'shipped': return '📦 Em Transporte';
+                case 'processing': return '⏳ Processando';
+                default: return status;
+            }
+        }
+
+        function formatPrice(value) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        }
+
+        function reorder(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                const cart = JSON.parse(localStorage.getItem('carrinho')) || [];
+                order.items.forEach(item => cart.push(item));
+                localStorage.setItem('carrinho', JSON.stringify(cart));
+                window.location.href = 'carrinho.html';
+            }
+        }
+
+        renderOrders();
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
