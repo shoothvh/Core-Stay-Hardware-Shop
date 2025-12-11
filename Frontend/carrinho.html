@@ -173,8 +173,11 @@
                     <li><a href="index.html"><i data-lucide="layout-grid"></i> Catálogo</a></li>
                     <li><a href="montar-pc.html"><i data-lucide="cpu"></i> Montar PC</a></li>
                     <li><a href="carrinho.html" class="active"><i data-lucide="shopping-cart"></i> Carrinho</a></li>
-                    <li><a href="pedidos.html"><i data-lucide="package"></i> Pedidos</a></li>
-                    <li><a href="admin.html"><i data-lucide="settings"></i> Admin</a></li>
+                    <li data-auth="logged"><a href="pedidos.html"><i data-lucide="package"></i> Pedidos</a></li>
+                    <li data-auth="admin"><a href="dashboard.html"><i data-lucide="bar-chart-3"></i> Dashboard</a></li>
+                    <li data-auth="guest"><a href="login.html"><i data-lucide="log-in"></i> Entrar</a></li>
+                    <li data-auth="logged"><a href="login.html"><i data-lucide="user"></i> Conta</a></li>
+                    <li data-auth="admin"><a href="admin.html"><i data-lucide="settings"></i> Admin</a></li>
                 </ul>
             </nav>
         </div>
@@ -230,6 +233,54 @@
                     <p id="shipping-result"></p>
                 </div>
 
+                <!-- Payment Method -->
+                <div class="payment-section">
+                    <label>Método de Pagamento</label>
+                    <div class="payment-options">
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="pix" checked>
+                            <div class="payment-card">
+                                <span class="payment-icon">🟢</span>
+                                <div>
+                                    <strong>PIX</strong>
+                                    <small>Aprovação instantânea</small>
+                                </div>
+                                <span class="payment-discount">5% OFF</span>
+                            </div>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="credit">
+                            <div class="payment-card">
+                                <span class="payment-icon">💳</span>
+                                <div>
+                                    <strong>Cartão de Crédito</strong>
+                                    <small>Até 12x sem juros</small>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="debit">
+                            <div class="payment-card">
+                                <span class="payment-icon">💳</span>
+                                <div>
+                                    <strong>Cartão de Débito</strong>
+                                    <small>Desconto de 3%</small>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="boleto">
+                            <div class="payment-card">
+                                <span class="payment-icon">📄</span>
+                                <div>
+                                    <strong>Boleto Bancário</strong>
+                                    <small>Vence em 3 dias úteis</small>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
                 <button class="btn-checkout" onclick="finalizarCompra()">
                     Finalizar Compra
                 </button>
@@ -237,8 +288,24 @@
         </div>
     </main>
 
+    <script src="auth-guard.js"></script>
     <script src="carrinho.js"></script>
-    <script>lucide.createIcons();</script>
+    <script>
+        lucide.createIcons();
+        // Update nav visibility
+        (function () {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            const isLogged = user !== null;
+            const isAdmin = user && user.isAdmin === true;
+            document.querySelectorAll('[data-auth]').forEach(el => el.style.display = 'none');
+            if (isLogged) {
+                document.querySelectorAll('[data-auth="logged"]').forEach(el => el.style.display = '');
+                if (isAdmin) document.querySelectorAll('[data-auth="admin"]').forEach(el => el.style.display = '');
+            } else {
+                document.querySelectorAll('[data-auth="guest"]').forEach(el => el.style.display = '');
+            }
+        })();
+    </script>
 </body>
 
 </html>

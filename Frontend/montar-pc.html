@@ -13,15 +13,16 @@
     <style>
         .kit-builder {
             display: grid;
-            grid-template-columns: 1fr 350px;
+            grid-template-columns: 1fr 380px;
             gap: 40px;
             margin-top: 30px;
+            align-items: start;
         }
 
         .kit-categories {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
         .kit-category {
@@ -29,86 +30,131 @@
             border-radius: var(--border-radius);
             border: 1px solid var(--border-color);
             overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .kit-category:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
         .kit-category-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 20px;
-            background: rgba(0, 0, 0, 0.2);
-            border-bottom: 1px solid var(--border-color);
+            padding: 20px 24px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid transparent;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
         }
 
         .kit-category-header:hover {
+            background: rgba(255, 107, 0, 0.05);
+        }
+
+        .kit-category.open .kit-category-header {
             background: rgba(255, 107, 0, 0.1);
+            border-bottom-color: var(--border-color);
         }
 
         .kit-category-header h3 {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 1rem;
+            gap: 16px;
+            font-size: 1.1rem;
             margin: 0;
+            font-weight: 600;
         }
 
         .kit-category-header h3 i {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+
+        .kit-category-header:hover h3 i,
+        .kit-category.open h3 i,
+        .kit-category-header.selected h3 i {
             color: var(--accent-color);
         }
 
         .kit-category-header .check {
-            color: #34c759;
+            color: var(--success-color);
             display: none;
+            background: rgba(52, 199, 89, 0.1);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
         }
 
         .kit-category-header.selected .check {
-            display: block;
+            display: flex;
         }
 
         .kit-options {
             display: none;
-            padding: 16px;
-            gap: 12px;
+            padding: 20px;
+            gap: 16px;
             flex-direction: column;
-            max-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+            scrollbar-width: thin;
         }
 
         .kit-category.open .kit-options {
             display: flex;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .kit-option {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px;
+            gap: 16px;
+            padding: 16px;
             border-radius: var(--border-radius-sm);
             border: 1px solid var(--border-color);
+            background: var(--bg-color);
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            position: relative;
         }
 
         .kit-option:hover {
             border-color: var(--accent-color);
-            background: rgba(255, 107, 0, 0.05);
+            transform: translateX(4px);
         }
 
         .kit-option.selected {
             border-color: var(--accent-color);
-            background: rgba(255, 107, 0, 0.1);
+            background: rgba(255, 107, 0, 0.05);
+            box-shadow: 0 0 0 1px var(--accent-color);
         }
 
         .kit-option img {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             object-fit: contain;
-            background: #1a1a1a;
-            border-radius: 6px;
+            background: #fff;
+            padding: 4px;
+            border-radius: 8px;
         }
 
         .kit-option-info {
@@ -116,23 +162,28 @@
         }
 
         .kit-option-info h4 {
-            font-size: 0.9rem;
-            margin-bottom: 4px;
+            font-size: 1rem;
+            margin-bottom: 6px;
+            color: var(--text-primary);
         }
 
         .kit-option-info small {
             color: var(--text-secondary);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 4px;
         }
 
         .kit-option-price {
             font-weight: 700;
             color: var(--accent-color);
+            font-size: 1.1rem;
         }
 
         .kit-option-stock {
             font-size: 0.75rem;
             color: var(--success-color);
+            font-weight: 600;
         }
 
         /* Summary Panel */
@@ -140,92 +191,146 @@
             background: var(--card-bg);
             border-radius: var(--border-radius);
             border: 1px solid var(--border-color);
-            padding: 24px;
+            padding: 30px;
             position: sticky;
             top: 100px;
             height: fit-content;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
         .kit-summary h3 {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-
-        .kit-summary h3 i {
-            color: var(--accent-color);
+            gap: 12px;
+            font-size: 1.4rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
         }
 
         .kit-summary-items {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
+            gap: 16px;
+            margin-bottom: 24px;
+            max-height: 400px;
+            overflow-y: auto;
         }
 
         .kit-summary-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 0.95rem;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .kit-summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .kit-summary-item span:first-child {
+            color: var(--text-secondary);
             font-size: 0.9rem;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .kit-summary-item.empty {
             color: var(--text-muted);
             font-style: italic;
-        }
-
-        .kit-summary-item span:last-child {
-            font-weight: 600;
+            text-align: center;
+            padding: 20px 0;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
         }
 
         .kit-total {
             display: flex;
             justify-content: space-between;
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        .kit-total span:last-child {
-            color: var(--accent-color);
+            margin-top: 20px;
+            margin-bottom: 24px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border-color);
         }
 
         .kit-savings {
-            background: rgba(52, 199, 89, 0.1);
+            background: linear-gradient(135deg, rgba(52, 199, 89, 0.1), rgba(52, 199, 89, 0.05));
             color: #34c759;
-            padding: 12px;
+            padding: 16px;
             border-radius: var(--border-radius-sm);
             text-align: center;
-            font-weight: 600;
-            margin-bottom: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            border: 1px solid rgba(52, 199, 89, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .btn-add-kit {
             width: 100%;
-            padding: 16px;
+            padding: 18px;
             background: var(--accent-color);
             color: #fff;
             border: none;
-            border-radius: 100px;
-            font-size: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .btn-add-kit:hover {
             background: var(--accent-hover);
             transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 107, 0, 0.2);
         }
 
         .btn-add-kit:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
+            background: var(--border-color);
+        }
+
+        .btn-clear-kit {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-clear-kit:hover {
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+            background: rgba(239, 68, 68, 0.05);
         }
 
         /* Responsive */
@@ -260,7 +365,11 @@
                     <li><a href="index.html"><i data-lucide="layout-grid"></i> Catálogo</a></li>
                     <li><a href="montar-pc.html" class="active"><i data-lucide="cpu"></i> Montar PC</a></li>
                     <li><a href="carrinho.html"><i data-lucide="shopping-cart"></i> Carrinho</a></li>
-                    <li><a href="admin.html"><i data-lucide="settings"></i> Admin</a></li>
+                    <li data-auth="logged"><a href="pedidos.html"><i data-lucide="package"></i> Pedidos</a></li>
+                    <li data-auth="admin"><a href="dashboard.html"><i data-lucide="bar-chart-3"></i> Dashboard</a></li>
+                    <li data-auth="guest"><a href="login.html"><i data-lucide="log-in"></i> Entrar</a></li>
+                    <li data-auth="logged"><a href="login.html"><i data-lucide="user"></i> Conta</a></li>
+                    <li data-auth="admin"><a href="admin.html"><i data-lucide="settings"></i> Admin</a></li>
                 </ul>
             </nav>
         </div>
@@ -298,6 +407,9 @@
                 <button class="btn-add-kit" id="btn-add-kit" disabled onclick="addKitToCart()">
                     Adicionar ao Carrinho
                 </button>
+                <button class="btn-clear-kit" onclick="clearBuild()">
+                    Limpar Configuração
+                </button>
             </aside>
         </div>
     </main>
@@ -309,10 +421,14 @@
 
         const categories = [
             { id: 'processador', name: 'Processador', icon: 'cpu', filter: 'Processador' },
-            { id: 'gpu', name: 'Placa de Vídeo', icon: 'monitor', filter: 'Placa de Vídeo' },
-            { id: 'memoria', name: 'Memória RAM', icon: 'database', filter: 'Memória' },
+            { id: 'placa-mae', name: 'Placa-Mãe', icon: 'circuit-board', filter: 'Placa-Mãe' },
+            { id: 'cooler', name: 'Cooler', icon: 'fan', filter: 'Cooler' },
+            { id: 'memoria', name: 'Memória RAM', icon: 'memory-stick', filter: 'Memória RAM' },
+            { id: 'gpu', name: 'Placa de Vídeo', icon: 'monitor-play', filter: 'Placa de Vídeo' },
             { id: 'armazenamento', name: 'Armazenamento', icon: 'hard-drive', filter: 'Armazenamento' },
             { id: 'fonte', name: 'Fonte', icon: 'zap', filter: 'Fonte' },
+            { id: 'gabinete', name: 'Gabinete', icon: 'box', filter: 'Gabinete' },
+            { id: 'monitor', name: 'Monitor', icon: 'monitor', filter: 'Monitor' },
             { id: 'perifericos', name: 'Periféricos', icon: 'mouse', filter: 'Periféricos' }
         ];
 
@@ -386,6 +502,41 @@
             category.querySelector('.kit-category-header').classList.add('selected');
 
             updateSummary();
+
+            // Auto-open next category
+            const currentIdx = categories.findIndex(c => c.id === catId);
+            if (currentIdx !== -1 && currentIdx < categories.length - 1) {
+                const nextCatId = categories[currentIdx + 1].id;
+                // Close current
+                category.classList.remove('open');
+                // Open next
+                setTimeout(() => {
+                    const nextCategory = document.getElementById(`cat-${nextCatId}`);
+                    if (nextCategory) {
+                        nextCategory.classList.add('open');
+                        // Scroll to it nicely
+                        nextCategory.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 300);
+            }
+        }
+
+        function clearBuild() {
+            if (!confirm('Tem certeza que deseja limpar toda a configuração?')) return;
+
+            selectedItems = {};
+
+            // UI Reset
+            document.querySelectorAll('.kit-option').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.kit-category-header').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.kit-category').forEach(el => el.classList.remove('open'));
+
+            // Open first category
+            if (categories.length > 0) {
+                document.getElementById(`cat-${categories[0].id}`).classList.add('open');
+            }
+
+            updateSummary();
         }
 
         function updateSummary() {
@@ -444,6 +595,19 @@
 
         loadProducts();
         lucide.createIcons();
+        // Nav visibility
+        (function () {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            const isLogged = user !== null;
+            const isAdmin = user && user.isAdmin === true;
+            document.querySelectorAll('[data-auth]').forEach(el => el.style.display = 'none');
+            if (isLogged) {
+                document.querySelectorAll('[data-auth="logged"]').forEach(el => el.style.display = '');
+                if (isAdmin) document.querySelectorAll('[data-auth="admin"]').forEach(el => el.style.display = '');
+            } else {
+                document.querySelectorAll('[data-auth="guest"]').forEach(el => el.style.display = '');
+            }
+        })();
     </script>
 </body>
 

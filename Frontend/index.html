@@ -38,9 +38,11 @@
                     <li><a href="montar-pc.html"><i data-lucide="cpu"></i> Montar PC</a></li>
                     <li><a href="carrinho.html" id="cart-btn"><i data-lucide="shopping-cart"></i> Carrinho <span
                                 class="cart-badge">0</span></a></li>
-                    <li><a href="pedidos.html"><i data-lucide="package"></i> Pedidos</a></li>
-                    <li><a href="dashboard.html"><i data-lucide="bar-chart-3"></i> Dashboard</a></li>
-                    <li><a href="admin.html"><i data-lucide="settings"></i> Admin</a></li>
+                    <li data-auth="logged"><a href="pedidos.html"><i data-lucide="package"></i> Pedidos</a></li>
+                    <li data-auth="admin"><a href="dashboard.html"><i data-lucide="bar-chart-3"></i> Dashboard</a></li>
+                    <li data-auth="guest"><a href="login.html"><i data-lucide="log-in"></i> Entrar</a></li>
+                    <li data-auth="logged"><a href="login.html"><i data-lucide="user"></i> Conta</a></li>
+                    <li data-auth="admin"><a href="admin.html"><i data-lucide="settings"></i> Admin</a></li>
                 </ul>
                 <button id="theme-toggle" onclick="toggleTheme()" title="Alternar tema">
                     <i data-lucide="sun"></i>

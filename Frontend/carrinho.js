@@ -125,8 +125,33 @@ function formatarMoeda(valor) {
     }).format(valor);
 }
 
+// Get selected payment method
+function getPaymentMethod() {
+    const selected = document.querySelector('input[name="payment"]:checked');
+    return selected ? selected.value : 'pix';
+}
+
+// Payment method labels
+function getPaymentLabel(method) {
+    const labels = {
+        'pix': 'PIX (5% OFF)',
+        'credit': 'Cartão de Crédito',
+        'debit': 'Cartão de Débito (3% OFF)',
+        'boleto': 'Boleto Bancário'
+    };
+    return labels[method] || method;
+}
+
 // Finalizar compra (simulação)
 function finalizarCompra() {
+    // 1. Check if user is logged in
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) {
+        alert('Você precisa estar logado para finalizar a compra.');
+        window.location.href = 'login.html';
+        return;
+    }
+
     const carrinho = getCarrinho();
 
     if (carrinho.length === 0) {
@@ -134,9 +159,17 @@ function finalizarCompra() {
         return;
     }
 
+    // 2. Get payment method and apply discount
+    const paymentMethod = getPaymentMethod();
+    let paymentDiscount = 0;
+    if (paymentMethod === 'pix') paymentDiscount = 0.05;
+    if (paymentMethod === 'debit') paymentDiscount = 0.03;
+
     const subtotal = carrinho.reduce((sum, item) => sum + parseFloat(item.preco), 0);
-    const discount = subtotal * appliedDiscount;
-    const total = subtotal - discount;
+    const couponDiscount = subtotal * appliedDiscount;
+    const paymentDiscountValue = (subtotal - couponDiscount) * paymentDiscount;
+    const total = subtotal - couponDiscount - paymentDiscountValue;
+
 
     // Save order to history
     const orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || [];
@@ -145,9 +178,12 @@ function finalizarCompra() {
         date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
         items: carrinho,
         subtotal: subtotal,
-        discount: discount,
+        discount: couponDiscount + paymentDiscountValue,
         total: total,
         coupon: appliedCouponCode,
+        paymentMethod: paymentMethod,
+        userId: currentUser.id,
+        userEmail: currentUser.email,
         status: 'processing' // processing, shipped, delivered
     };
     orderHistory.unshift(newOrder);
@@ -157,8 +193,12 @@ function finalizarCompra() {
     message += `Pedido #${newOrder.id}\n`;
     message += `Subtotal: ${formatarMoeda(subtotal)}\n`;
     if (appliedDiscount > 0) {
-        message += `Desconto (${appliedCouponCode}): -${formatarMoeda(discount)}\n`;
+        message += `Desconto Cupom (${appliedCouponCode}): -${formatarMoeda(couponDiscount)}\n`;
     }
+    if (paymentDiscountValue > 0) {
+        message += `Desconto ${getPaymentLabel(paymentMethod)}: -${formatarMoeda(paymentDiscountValue)}\n`;
+    }
+    message += `Pagamento: ${getPaymentLabel(paymentMethod)}\n`;
     message += `Total: ${formatarMoeda(total)}\n\n`;
     message += 'Acompanhe seu pedido em "Meus Pedidos"!';
 

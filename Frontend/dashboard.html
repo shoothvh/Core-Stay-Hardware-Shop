@@ -10,6 +10,19 @@
         href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="auth-guard.js"></script>
+    <script>
+        // Protect this page - admin only
+        (function () {
+            if (!AuthGuard.isLoggedIn()) {
+                alert('Você precisa estar logado para acessar esta página.');
+                window.location.replace('login.html');
+            } else if (!AuthGuard.isAdmin()) {
+                alert('Acesso negado. Apenas administradores podem acessar esta página.');
+                window.location.replace('index.html');
+            }
+        })();
+    </script>
     <style>
         .dashboard-grid {
             display: grid;

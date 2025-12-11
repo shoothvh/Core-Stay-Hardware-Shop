@@ -301,7 +301,12 @@ function adicionarAoCarrinho(produto) {
 function atualizarCarrinhoUI() {
     const carrinho = getCarrinho();
     if (cartBtn) {
-        cartBtn.innerHTML = `Carrinho <span class="cart-badge">${carrinho.length}</span>`;
+        // Preserve the icon, only update the text and badge
+        cartBtn.innerHTML = `<i data-lucide="shopping-cart"></i> Carrinho <span class="cart-badge">${carrinho.length}</span>`;
+        // Re-create the icon
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
     }
 }
 
@@ -545,8 +550,47 @@ function subscribeNewsletter(event) {
     showToast('🎉 Inscrito na newsletter!');
 }
 
+// ========== NAV VISIBILITY ==========
+function updateNavVisibility() {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    const isLogged = user !== null;
+    const isAdmin = user && user.isAdmin === true;
+
+    // Hide all auth-dependent items first
+    document.querySelectorAll('[data-auth]').forEach(el => {
+        el.style.display = 'none';
+    });
+
+    // Show appropriate items
+    if (isLogged) {
+        // Show items for logged users
+        document.querySelectorAll('[data-auth="logged"]').forEach(el => {
+            el.style.display = '';
+        });
+
+        if (isAdmin) {
+            // Show admin-only items
+            document.querySelectorAll('[data-auth="admin"]').forEach(el => {
+                el.style.display = '';
+            });
+        }
+    } else {
+        // Show guest-only items (like "Entrar" button)
+        document.querySelectorAll('[data-auth="guest"]').forEach(el => {
+            el.style.display = '';
+        });
+    }
+}
+
 // ========== INIT ==========
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     loadProducts();
+    updateNavVisibility();
+    // Create icons after a short delay to ensure DOM is ready
+    setTimeout(() => {
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }, 100);
 });

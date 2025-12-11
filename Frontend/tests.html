@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Stay | Unit Tests</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0d0d0d;
+            color: #fff;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #ff6b00;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 40px;
+        }
+
+        .test-suite {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .test-suite h2 {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            color: #ff6b00;
+        }
+
+        .test {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+            font-size: 0.9rem;
+        }
+
+        .test:last-child {
+            border-bottom: none;
+        }
+
+        .test.pass .icon {
+            color: #34c759;
+        }
+
+        .test.fail .icon {
+            color: #ff4444;
+        }
+
+        .icon {
+            font-size: 1.2rem;
+        }
+
+        .summary {
+            display: flex;
+            gap: 24px;
+            padding: 20px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-item .number {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .summary-item .label {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .pass .number {
+            color: #34c759;
+        }
+
+        .fail .number {
+            color: #ff4444;
+        }
+
+        .total .number {
+            color: #ff6b00;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🧪 Unit Tests</h1>
+    <p class="subtitle">Core Stay - Test Runner</p>
+
+    <div id="test-results"></div>
+    <div id="summary" class="summary"></div>
+
+    <script src="validation.js"></script>
+    <script>
+        // ========================================
+        // SIMPLE TEST RUNNER
+        // ========================================
+
+        const TestRunner = {
+            passed: 0,
+            failed: 0,
+            results: [],
+
+            assert(condition, description) {
+                if (condition) {
+                    this.passed++;
+                    this.results.push({ pass: true, description });
+                } else {
+                    this.failed++;
+                    this.results.push({ pass: false, description });
+                }
+            },
+
+            assertEqual(actual, expected, description) {
+                this.assert(actual === expected, description + ' (expected: ' + expected + ', got: ' + actual + ')');
+            },
+
+            assertTrue(value, description) {
+                this.assert(value === true, description);
+            },
+
+            assertFalse(value, description) {
+                this.assert(value === false, description);
+            }
+        };
+
+        // ========================================
+        // VALIDATION TESTS
+        // ========================================
+
+        function runValidationTests() {
+            const T = TestRunner;
+
+            // Email tests
+            T.assertTrue(Validator.email('test@email.com').valid, 'Valid email accepted');
+            T.assertTrue(Validator.email('user.name@domain.co').valid, 'Email with dot accepted');
+            T.assertFalse(Validator.email('invalid').valid, 'Invalid email rejected');
+            T.assertFalse(Validator.email('no@domain').valid, 'Email without TLD rejected');
+            T.assertFalse(Validator.email('@domain.com').valid, 'Email without user rejected');
+
+            // Password tests
+            T.assertTrue(Validator.password('123456').valid, 'Password with 6 chars accepted');
+            T.assertTrue(Validator.password('longerpassword').valid, 'Longer password accepted');
+            T.assertFalse(Validator.password('12345').valid, 'Password with 5 chars rejected');
+            T.assertFalse(Validator.password('').valid, 'Empty password rejected');
+
+            // Name tests
+            T.assertTrue(Validator.name('John').valid, 'Name with 4 chars accepted');
+            T.assertTrue(Validator.name('Ana').valid, 'Name with 3 chars accepted');
+            T.assertFalse(Validator.name('AB').valid, 'Name with 2 chars rejected');
+            T.assertFalse(Validator.name('  ').valid, 'Whitespace only name rejected');
+
+            // Required tests
+            T.assertTrue(Validator.required('value').valid, 'Non-empty value accepted');
+            T.assertFalse(Validator.required('').valid, 'Empty value rejected');
+            T.assertFalse(Validator.required('   ').valid, 'Whitespace only rejected');
+
+            // CEP tests
+            T.assertTrue(Validator.cep('01310-100').valid, 'CEP with dash accepted');
+            T.assertTrue(Validator.cep('01310100').valid, 'CEP without dash accepted');
+            T.assertFalse(Validator.cep('1234567').valid, 'CEP with 7 digits rejected');
+            T.assertFalse(Validator.cep('123456789').valid, 'CEP with 9 digits rejected');
+
+            // Price tests
+            T.assertTrue(Validator.price('100').valid, 'Valid price accepted');
+            T.assertTrue(Validator.price('99.99').valid, 'Decimal price accepted');
+            T.assertFalse(Validator.price('0').valid, 'Zero price rejected');
+            T.assertFalse(Validator.price('-10').valid, 'Negative price rejected');
+            T.assertFalse(Validator.price('abc').valid, 'Non-numeric price rejected');
+
+            // Quantity tests
+            T.assertTrue(Validator.quantity('1').valid, 'Quantity 1 accepted');
+            T.assertTrue(Validator.quantity('100').valid, 'Large quantity accepted');
+            T.assertFalse(Validator.quantity('0').valid, 'Zero quantity rejected');
+            T.assertFalse(Validator.quantity('-1').valid, 'Negative quantity rejected');
+        }
+
+        // ========================================
+        // SANITIZER TESTS
+        // ========================================
+
+        function runSanitizerTests() {
+            const T = TestRunner;
+
+            // HTML sanitization
+            T.assertEqual(Sanitizer.html('<b>bold</b>'), '&lt;b&gt;bold&lt;/b&gt;', 'HTML tags escaped');
+            T.assertEqual(Sanitizer.html('Hello World'), 'Hello World', 'Plain text unchanged');
+
+            // Alphanumeric
+            T.assertEqual(Sanitizer.alphanumeric('Hello123'), 'Hello123', 'Alphanumeric preserved');
+            T.assertEqual(Sanitizer.alphanumeric('Test Space'), 'Test Space', 'Spaces preserved');
+
+            // CEP formatting
+            T.assertEqual(Sanitizer.cep('01310100'), '01310-100', 'CEP formatted correctly');
+            T.assertEqual(Sanitizer.cep('01310'), '01310', 'Short CEP unchanged');
+
+            // Currency formatting
+            T.assertEqual(Sanitizer.currency(100), 'R$ 100,00', 'Currency formatted');
+            T.assertEqual(Sanitizer.currency(1234.56), 'R$ 1.234,56', 'Decimal currency formatted');
+        }
+
+        // ========================================
+        // RUN ALL TESTS
+        // ========================================
+
+        runValidationTests();
+        runSanitizerTests();
+
+        // Render results
+        const container = document.getElementById('test-results');
+
+        const suites = {
+            'Validation Tests': TestRunner.results.filter(function (r) {
+                return r.description.includes('email') ||
+                    r.description.includes('password') ||
+                    r.description.includes('Name') ||
+                    r.description.includes('value') ||
+                    r.description.includes('CEP') ||
+                    r.description.includes('price') ||
+                    r.description.includes('uantity');
+            }),
+            'Sanitizer Tests': TestRunner.results.filter(function (r) {
+                return r.description.includes('escaped') ||
+                    r.description.includes('preserved') ||
+                    r.description.includes('formatted') ||
+                    r.description.includes('unchanged') ||
+                    r.description.includes('Currency');
+            })
+        };
+
+        var html = '';
+        for (var suiteName in suites) {
+            var tests = suites[suiteName];
+            html += '<div class="test-suite"><h2>' + suiteName + '</h2>';
+            tests.forEach(function (t) {
+                html += '<div class="test ' + (t.pass ? 'pass' : 'fail') + '">';
+                html += '<span class="icon">' + (t.pass ? '✓' : '✗') + '</span>';
+                html += '<span>' + t.description + '</span>';
+                html += '</div>';
+            });
+            html += '</div>';
+        }
+        container.innerHTML = html;
+
+        // Summary
+        document.getElementById('summary').innerHTML =
+            '<div class="summary-item pass">' +
+            '<div class="number">' + TestRunner.passed + '</div>' +
+            '<div class="label">Passed</div>' +
+            '</div>' +
+            '<div class="summary-item fail">' +
+            '<div class="number">' + TestRunner.failed + '</div>' +
+            '<div class="label">Failed</div>' +
+            '</div>' +
+            '<div class="summary-item total">' +
+            '<div class="number">' + (TestRunner.passed + TestRunner.failed) + '</div>' +
+            '<div class="label">Total</div>' +
+            '</div>';
+    </script>
+</body>
+
+</html>

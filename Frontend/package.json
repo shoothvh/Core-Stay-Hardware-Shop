@@ -1,0 +1,15 @@
+{
+  "name": "corestay-frontend",
+  "version": "2.0.0",
+  "description": "Core Stay Hardware Shop - Frontend",
+  "scripts": {
+    "minify:css": "npx clean-css-cli -o dist/style.min.css style.css",
+    "minify:js": "npx terser script.js -o dist/script.min.js -c -m",
+    "minify:validation": "npx terser validation.js -o dist/validation.min.js -c -m",
+    "build": "npm run minify:css && npm run minify:js && npm run minify:validation",
+    "test": "echo 'Open tests.html in browser'"
+  },
+  "keywords": ["ecommerce", "hardware", "shop"],
+  "author": "Core Stay",
+  "license": "MIT"
+}
